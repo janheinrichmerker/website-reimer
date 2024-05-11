@@ -1,0 +1,11 @@
+{{ define "main" }}
+<article id="404">
+    <h1>Seite nicht gefunden</h1>
+    <p>
+        Die angefragte Seite existiert nicht.
+    </p>
+    <p>
+        Geh einfach zurück zur <a href="{{ $.Site.Home.RelPermalink }}" title='Startseite'>Startseite</a> oder <a href='{{ relref . "/imprint" }}' title='Kontakt'>kontaktiere</a> uns.
+    </p>
+</article>
+{{ end }}
