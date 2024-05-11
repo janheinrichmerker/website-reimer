@@ -2,11 +2,10 @@ name: CI
 
 on:
   push:
-    branches:
-      - main
+  pull_request:
   workflow_dispatch:
   schedule:
-    - cron: "0 7 * * *"
+    - cron: '0 7 * * *'
 
 jobs:
   build:
@@ -16,16 +15,11 @@ jobs:
       - name: 📥 Check-out
         uses: actions/checkout@v4
       - name: 🧰 Install Hugo
-        uses: peaceiris/actions-hugo@v2
+        uses: peaceiris/actions-hugo@v3
         with:
           hugo-version: '0.123.4'
-          extended: true
       - name: 🧰 Install dart-sass-embedded
-        run: |
-          curl -LJO https://github.com/sass/dart-sass-embedded/releases/download/1.56.2/sass_embedded-1.56.2-linux-x64.tar.gz;
-          echo "9e4f455f7b8619959d7878af2862383be58392eb963a14ff87cc512c03701e2a  sass_embedded-1.56.2-linux-x64.tar.gz" | sha256sum -c;
-          tar -xvf sass_embedded-1.56.2-linux-x64.tar.gz;
-          echo "$GITHUB_WORKSPACE/sass_embedded/" >> $GITHUB_PATH
+        run: sudo snap install dart-sass
       - name: ♻️ Cache Hugo modules
         uses: actions/cache@v4
         with:
@@ -55,6 +49,10 @@ jobs:
           name: public-pages
           path: public/
           if-no-files-found: error
+      - name: 📤 Upload public pages (for GitHub Pages)
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: public/
   deploy:
     name: 🚀 Deploy
     if: |
@@ -65,6 +63,12 @@ jobs:
         startsWith(github.ref, 'refs/tags'))
     needs:
       - build
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: GitHub Pages
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
       - name: 📥 Download public pages
@@ -72,14 +76,9 @@ jobs:
         with:
           name: public-pages
           path: public/
-      - name: 🧰 Install SSH key
-        uses: shimataro/ssh-key-action@v2
-        with:
-          key: ${{ secrets.DEPLOY_SSH_KEY }}
-          known_hosts: ${{ secrets.DEPLOY_SSH_KNOWN_HOSTS }}
-      - name: 🚀 Deploy via Rsync
-        run: |
-          rsync -avz public/ ${{ secrets.DEPLOY_SSH_USER }}@${{ secrets.DEPLOY_SSH_HOST }}:${{ secrets.DEPLOY_SSH_TARGET_PATH }}
+      - name: 🚀 Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
   release:
     name: 🚀 Create GitHub release
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
@@ -93,14 +92,14 @@ jobs:
         id: get-version
         run: echo ::set-output name=tag::${GITHUB_REF/refs\/tags\//}
       - name: 📥 Download public pages
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v2
         with:
           name: public-pages
           path: public/
       - name: 🗜️ Create public pages archive
         run: zip -r public.zip public/
       - name: 🚀 Create GitHub release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           name: Release ${{ steps.get-version.outputs.tag }}
           draft: false
