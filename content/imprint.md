@@ -51,6 +51,6 @@ Quelle: [e-recht24](https://www.e-recht24.de)
 
 ## Lizenz <a name="license"/>
 
-Der [Quellcode](https://github.com/heinrichreimer/website-reimer) dieser Webseite ist unter der
+Der [Quellcode](https://github.com/janheinrichmerker/website-reimer) dieser Webseite ist unter der
 [MIT License](https://opensource.org/licenses/MIT)
 lizensiert.
