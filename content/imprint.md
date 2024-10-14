@@ -13,14 +13,14 @@ Angaben gemäß § 5 TMG:
 
 <address>
 
-Jan Heinrich Reimer  
+Jan Heinrich Merker  
 Hohestieg 12  
 38118 Braunschweig
 
 </address>
 
 Telefon: [+49 174 9273954](tel:+491749273954)  
-E-Mail: [heinrich@reimer.dev](mailto:heinrich@reimer.dev)
+E-Mail: [heinrich@merker.ai](mailto:heinrich@merker.ai)
 
 ### Haftung für Inhalte
 
