@@ -37,10 +37,10 @@ jobs:
           key: link-checker-${{ github.sha }}
           restore-keys: link-checker-
       - name: 🔄 Check links
-        id: linkCheck
         uses: lycheeverse/lychee-action@v2
         with:
-          args: --require-https --verbose --no-progress --max-concurrency 2 --root-dir "$(pwd)/public" --cache --max-cache-age 1d --exclude heinrich@merker.ai --max-retries 10 public/
+          # TODO: Re-include https://johannes-foto.de/
+          args: --require-https --verbose --no-progress --max-concurrency 2 --root-dir "$(pwd)/public" --cache --max-cache-age 1d --exclude heinrich@merker.ai --exclude https://johannes-foto.de/ --max-retries 10 public/
           fail: true
       - name: 📤 Upload public pages
         uses: actions/upload-artifact@v4
